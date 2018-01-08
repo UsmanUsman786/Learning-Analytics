@@ -1,0 +1,29 @@
+import pandas
+with open("E:\crystal\DB.csv", 'r') as csvfile:
+    nba = pandas.read_csv(csvfile)
+    print(nba.columns.values)
+
+
+import random
+import math
+from numpy.random import permutation
+random_indices = permutation(nba.index)
+# Set a cutoff for how many items we want in the test set (in this case 1/3 of the items)
+test_cutoff = math.floor(len(nba)/1)
+# Generate the test set by taking the first 1/3 of the randomly shuffled indices.
+test = nba.loc[random_indices[1:]]
+
+
+x_columns =['total','Total Avg','Total Maxd','Total Avgd']
+X=test[x_columns]
+y=test['Grade']
+
+
+
+from sklearn.cross_validation import cross_val_score
+from sklearn.neighbors import KNeighborsRegressor
+Knn = KNeighborsRegressor(n_neighbors=5)
+scores=cross_val_score(Knn,X,y,cv=10)
+
+
+scores.mean()
